@@ -2,11 +2,11 @@
 
 STYLE=bright
 PROJECT_PATH="/srv/style-osm-geopicardie/styles/$STYLE/"
-BRANCH=imposm3-mapping
+BRANCH=docker
 
 cd $PROJECT_PATH
-git checkout $BRANCH
 git pull
+git checkout $BRANCH
 cat project.mml|prod_project_mml  > project.loc.mml
 carto project.loc.mml > mapnik.xml
 
