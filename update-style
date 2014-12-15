@@ -1,0 +1,7 @@
+#!/bin/bash
+
+BRANCH=imposm3-mapping
+
+cd /srv/style-osm-geopicardie
+git checkout $BRANCH
+git pull

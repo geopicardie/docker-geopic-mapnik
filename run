@@ -1,0 +1,62 @@
+#!/bin/bash
+
+STYLE=bright
+PROJECT_PATH="/srv/style-osm-geopicardie/styles/$STYLE/"
+
+cd $PROJECT_PATH
+cat project.mml|prod_project_mml  > project.loc.mml
+carto project.loc.mml > mapnik.xml
+
+if [ ! -d /srv/mapproxy/$STYLE ]; then
+	mkdir -p /srv/mapproxy/$STYLE
+fi
+
+cat > /srv/mapproxy/$STYLE/mapproxy.yaml << EOF
+services:
+  demo:
+  wms:
+    srs: ['EPSG:4326', 'EPSG:3857', 'EPSG:2154']
+    md:
+      title: $STYLE
+      abstract: Service WMS
+
+layers:
+  - name: $STYLE
+    title: $STYLE
+    sources: [mapnik_$STYLE]
+
+caches:
+
+sources:
+  mapnik_$STYLE:
+    type: mapnik
+    mapfile: $PROJECT_PATH/mapnik.xml
+
+grids:
+    webmercator:
+        base: GLOBAL_WEBMERCATOR
+    mercatornw:
+        base: GLOBAL_WEBMERCATOR
+        origin: nw
+
+globals:
+EOF
+
+mkdir /srv/mapproxy/$STYLE/www
+
+mapproxy-util create -t wsgi-app -f /srv/mapproxy/$STYLE/mapproxy.yaml /srv/mapproxy/$STYLE/www/config.py
+chmod a+x /srv/mapproxy/$STYLE/www/config.py
+
+cat >  /etc/apache2/conf-enabled/mapproxy-$STYLE\.conf << EOF
+WSGIScriptAlias /$STYLE /srv/mapproxy/$STYLE/www/config.py
+WSGIDaemonProcess mapproxy user=mapproxy group=mapproxy processes=2 threads=4
+WSGIProcessGroup mapproxy
+
+<Directory /srv/mapproxy/$STYLE/www>
+  Require all granted
+</Directory>
+EOF
+
+echo "Démarre apache" 1>&2
+
+/usr/sbin/apache2ctl -D FOREGROUND
