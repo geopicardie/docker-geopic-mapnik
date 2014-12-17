@@ -29,6 +29,7 @@ for l in project['Layer']:
 		l['Datasource']['password'] = 'osm'
 		l['Datasource']['host'] = os.getenv('POSTGRES_OSM_PORT_5432_TCP_ADDR')
 		l['Datasource']['port'] = os.getenv('POSTGRES_OSM_PORT_5432_TCP_PORT')
+		l['Datasource']['encoding'] = 'utf8'
 	else:
 		print "ooops:",l['name'],l['Datasource'].keys()
 		sys.exit(1)
