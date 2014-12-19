@@ -46,12 +46,7 @@ EOF
 
 mkdir /srv/mapproxy/$STYLE/www
 
-#mapproxy-util create -t wsgi-app -f /srv/mapproxy/$STYLE/mapproxy.yaml /srv/mapproxy/$STYLE/www/config.py
-
-cat > /srv/mapproxy/$STYLE/www/config.py << EOF
-from mapproxy.wsgiapp import make_wsgi_app
-application = make_wsgi_app(r'/srv/mapproxy/bright/mapproxy.yaml')
-EOF
+mapproxy-util create -t wsgi-app -f /srv/mapproxy/$STYLE/mapproxy.yaml /srv/mapproxy/$STYLE/www/config.py
 
 chmod a+x /srv/mapproxy/$STYLE/www/config.py
 
