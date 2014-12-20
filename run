@@ -54,10 +54,12 @@ globals:
 EOF
 
 mkdir /srv/mapproxy/$STYLE/www
+ln -s $PROJECT_PATH/img /srv/mapproxy/$STYLE/www/img
 
 mapproxy-util create -t wsgi-app -f /srv/mapproxy/$STYLE/mapproxy.yaml /srv/mapproxy/$STYLE/www/config.py
 
 chmod a+x /srv/mapproxy/$STYLE/www/config.py
+
 
 cat >  /etc/apache2/conf-enabled/mapproxy-$STYLE\.conf << EOF
 WSGIScriptAlias /$STYLE /srv/mapproxy/$STYLE/www/config.py
