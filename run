@@ -4,9 +4,18 @@ PROJECT_PATH="/srv/style-osm-geopicardie/styles/$STYLE/"
 BRANCH=docker
 
 cd $PROJECT_PATH
-git pull
+#git pull
 git checkout $BRANCH
+
+echo "Création MML local"
 cat project.mml|prod_project_mml  > project.loc.mml
+
+if [ ! -f project.loc.mml ]; then
+	echo "\t project.loc.mml existe pas"
+	exit 1
+fi
+
+echo "Création mapnik.xml"
 carto project.loc.mml > mapnik.xml
 
 if [ ! -d /srv/mapproxy/$STYLE ]; then
