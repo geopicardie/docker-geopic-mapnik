@@ -1,10 +1,15 @@
 #!/bin/bash
-STYLE=bright
+echo "Style $STYLE (branche $BRANCH)"
+
 PROJECT_PATH="/srv/style-osm-geopicardie/styles/$STYLE/"
-BRANCH=docker
+
+if [ ! -d $PROJECT_PATH ]; then
+	echo "Pas de style $STYLE"
+	echo "Le chemin $PROJECT_PATH existe pas"
+	exit 1
+fi
 
 cd $PROJECT_PATH
-#git pull
 git checkout $BRANCH
 
 echo "Création MML local"
@@ -17,6 +22,11 @@ fi
 
 echo "Création mapnik.xml"
 carto project.loc.mml > mapnik.xml
+
+if [ $? -gt 0 ]; then
+	echo "échec création mapnik.xml (carto)"
+	exit 1
+fi
 
 if [ ! -d /srv/mapproxy/$STYLE ]; then
 	mkdir -p /srv/mapproxy/$STYLE
