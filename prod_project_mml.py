@@ -16,7 +16,9 @@ files_ref = {
 	'shoreline_300': '/usr/share/shapefile/naturalearth/ne_10m_coastline.shp',
 	'10m_rivers': '/usr/share/shapefile/naturalearth/ne_10m_rivers_europe.shp',
 	'10m_lakes': '/usr/share/shapefile/naturalearth/ne_10m_lakes_europe.shp',
-	'10m_populated_places': '/usr/share/shapefile/naturalearth/ne_10m_populated_places.shp'
+	'10m_populated_places': '/usr/share/shapefile/naturalearth/ne_10m_populated_places.shp',
+	'L93_10K': '/srv/inpn/L93_10K.shp',
+	'L93_5K': '/srv/inpn/L93_5K.shp'
 }
 
 for l in project['Layer']:

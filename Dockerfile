@@ -18,7 +18,13 @@ RUN pip install MapProxy
 RUN useradd -d /srv/mapproxy mapproxy
 RUN wget -O /tmp/coastline.zip http://nicolas.damiens.info/coastline-good.zip
 RUN mkdir /srv/coastline/; cd /srv/coastline; unzip /tmp/coastline.zip; rm /tmp/coastline.zip
+RUN mkdir /srv/inpn;
+RUN wget -O /srv/inpn/l93_5k.zip http://inpn.mnhn.fr/docs/Shape/L93_5K.zip
+RUN wget -O /srv/inpn/l93_10k.zip http://inpn.mnhn.fr/docs/Shape/L93_10K.zip
+RUN cd /srv/inpn/; unzip l93_5k.zip; unzip l93_10k.zip; rm *.zip
 ADD prod_project_mml.py /usr/local/bin/prod_project_mml
 ADD run /usr/local/bin/run
+ENV STYLE bright
+
 EXPOSE 80
 CMD ["/usr/local/bin/run"]
