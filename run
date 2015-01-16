@@ -6,11 +6,20 @@ PROJECT_PATH="/srv/style-osm-geopicardie/"
 cd $PROJECT_PATH
 git checkout $BRANCH
 
+if [[ "$GITPULL" == "yes" ]]; then
+	echo "Mise à jour du dépôt."
+	git pull
+fi
+
 for STYLE_PATH in $(find $PROJECT_PATH/styles -mindepth 1 -maxdepth 1 -type d); do
 	STYLE=`basename $STYLE_PATH`
 	cd $STYLE_PATH
 	echo "Traitement style $STYLE"
 	echo -n "    Création MML local"
+	if [ ! -f project.mml ]; then
+		echo "      project.mml absent (passe)"
+		continue;
+	fi
 	cat project.mml|prod_project_mml  > project.loc.mml
 
 	if [ ! -f project.loc.mml ]; then

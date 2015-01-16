@@ -18,3 +18,5 @@ Configurer le conteneur pour un autre style que celui par défaut (-e STYLE=autr
 ```
 docker rm -f "geopic-mapnik" ; docker run -d -e STYLE=naturaliste -p 8080:80 --name "geopic-mapnik" --link geopic-postgres-osm:postgres_osm -v $HOME/docker/style-osm-geopicardie:/srv/style-osm-geopicardie geopicstyle-mapnik; docker logs -f geopic-mapnik
 ```
+
+Pour mettre à jour le dépot git des styles ajouter -e GITPULL=yes
