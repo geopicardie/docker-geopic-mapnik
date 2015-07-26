@@ -9,7 +9,7 @@ ENV HOME /root
 RUN gpg --keyserver keyserver.ubuntu.com --recv-keys ADE38194313EF4AF
 RUN gpg --armor --export ADE38194313EF4AF | apt-key add - 
 ADD depot-nico.list /etc/apt/sources.list.d/depot-nico.list
-RUN apt-get update; apt-get install -y naturalearth-data fonts-exo
+RUN apt-get update -o Acquire::ForceIPv4=true; apt-get install -o Acquire::ForceIPv4=true -y naturalearth-data fonts-exo
 RUN git clone https://github.com/bchartier/style-osm-geopicardie /srv/style-osm-geopicardie
 ENV BRANCH master
 ADD update-style /usr/local/bin/update-style
