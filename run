@@ -5,8 +5,8 @@ PROJECT_PATH="/srv/style-osm-geopicardie/styles/"
 cd $PROJECT_PATH
 git checkout $BRANCH
 
-for STYLE in `find $PROJECT_PATH -maxdepth 1 -type d`; do
-	STYLE=`basename $STYLE`
+for STYLE_PATH in `find $PROJECT_PATH -maxdepth 1 -type d`; do
+	STYLE=`basename $STYLE_PATH`
 	echo "Style $STYLE (branche $BRANCH)"
 
 	if [ ! -f $PROJECT_PATH/$STYLE/project.mml ]; then
@@ -56,7 +56,7 @@ caches:
 sources:
   mapnik_$STYLE:
     type: mapnik
-    mapfile: $PROJECT_PATH/mapnik.xml
+    mapfile: $PROJECT_PATH/$STYLE/mapnik.xml
 
 grids:
     webmercator:
@@ -78,8 +78,8 @@ EOF
 
 	cat >  /etc/apache2/conf-enabled/mapproxy-$STYLE\.conf << EOF
 WSGIScriptAlias /$STYLE /srv/mapproxy/$STYLE/www/config.py
-WSGIDaemonProcess mapproxy user=mapproxy group=mapproxy processes=2 threads=4
-WSGIProcessGroup mapproxy
+WSGIDaemonProcess mapproxy$STYLE user=mapproxy group=mapproxy processes=2 threads=4
+WSGIProcessGroup mapproxy$STYLE
 
 <Directory /srv/mapproxy/$STYLE/www>
   Require all granted
