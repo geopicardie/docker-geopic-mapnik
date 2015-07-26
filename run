@@ -1,38 +1,43 @@
 #!/bin/bash
-echo "Style $STYLE (branche $BRANCH)"
 
-PROJECT_PATH="/srv/style-osm-geopicardie/styles/$STYLE/"
-
-if [ ! -d $PROJECT_PATH ]; then
-	echo "Pas de style $STYLE"
-	echo "Le chemin $PROJECT_PATH existe pas"
-	exit 1
-fi
+PROJECT_PATH="/srv/style-osm-geopicardie/styles/"
 
 cd $PROJECT_PATH
 git checkout $BRANCH
 
-echo "Création MML local"
-cat project.mml|prod_project_mml  > project.loc.mml
+for STYLE in `find $PROJECT_PATH -maxdepth 1 -type d`; do
+	STYLE=`basename $STYLE`
+	echo "Style $STYLE (branche $BRANCH)"
 
-if [ ! -f project.loc.mml ]; then
-	echo "\t project.loc.mml existe pas"
-	exit 1
-fi
+	if [ ! -f $PROJECT_PATH/$STYLE/project.mml ]; then
+		echo "Pas de style $STYLE"
+		echo "Le chemin $PROJECT_PATH/$STYLE/project.mml existe pas"
+		continue
+	fi
+	
+	cd $STYLE
 
-echo "Création mapnik.xml"
-carto project.loc.mml > mapnik.xml
+	echo "Création MML local"
+	cat project.mml|prod_project_mml  > project.loc.mml
 
-if [ $? -gt 0 ]; then
-	echo "échec création mapnik.xml (carto)"
-	exit 1
-fi
+	if [ ! -f project.loc.mml ]; then
+		echo "\t project.loc.mml existe pas"
+		exit 1
+	fi
 
-if [ ! -d /srv/mapproxy/$STYLE ]; then
-	mkdir -p /srv/mapproxy/$STYLE
-fi
+	echo "Création mapnik.xml"
+	carto project.loc.mml > mapnik.xml
 
-cat > /srv/mapproxy/$STYLE/mapproxy.yaml << EOF
+	if [ $? -gt 0 ]; then
+		echo "échec création mapnik.xml (carto)"
+		exit 1
+	fi
+
+	if [ ! -d /srv/mapproxy/$STYLE ]; then
+		mkdir -p /srv/mapproxy/$STYLE
+	fi
+
+	cat > /srv/mapproxy/$STYLE/mapproxy.yaml << EOF
 services:
   demo:
   wms:
@@ -63,15 +68,15 @@ grids:
 globals:
 EOF
 
-mkdir /srv/mapproxy/$STYLE/www
-ln -s $PROJECT_PATH/img /srv/mapproxy/$STYLE/www/img
+	mkdir /srv/mapproxy/$STYLE/www
+	ln -s $PROJECT_PATH/img /srv/mapproxy/$STYLE/www/img
 
-mapproxy-util create -t wsgi-app -f /srv/mapproxy/$STYLE/mapproxy.yaml /srv/mapproxy/$STYLE/www/config.py
+	mapproxy-util create -t wsgi-app -f /srv/mapproxy/$STYLE/mapproxy.yaml /srv/mapproxy/$STYLE/www/config.py
 
-chmod a+x /srv/mapproxy/$STYLE/www/config.py
+	chmod a+x /srv/mapproxy/$STYLE/www/config.py
 
 
-cat >  /etc/apache2/conf-enabled/mapproxy-$STYLE\.conf << EOF
+	cat >  /etc/apache2/conf-enabled/mapproxy-$STYLE\.conf << EOF
 WSGIScriptAlias /$STYLE /srv/mapproxy/$STYLE/www/config.py
 WSGIDaemonProcess mapproxy user=mapproxy group=mapproxy processes=2 threads=4
 WSGIProcessGroup mapproxy
@@ -80,6 +85,8 @@ WSGIProcessGroup mapproxy
   Require all granted
 </Directory>
 EOF
+	cd ..
+done
 
 echo "Démarre apache" 1>&2
 
