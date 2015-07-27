@@ -14,6 +14,7 @@ RUN git clone https://github.com/bchartier/style-osm-geopicardie /srv/style-osm-
 ENV BRANCH master
 ADD update-style /usr/local/bin/update-style
 RUN a2enmod wsgi
+RUN apt-get install python-yaml
 RUN pip install MapProxy
 RUN useradd -d /srv/mapproxy mapproxy
 RUN wget -O /tmp/coastline.zip http://nicolas.damiens.info/coastline-good.zip
