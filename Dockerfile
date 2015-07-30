@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y locales && localedef -i fr_FR -c -f UTF-8 -A /usr/share/locale/locale.alias fr_FR.UTF-8
 
-RUN apt-get install -y node-carto apache2 python-dev python-pyproj python-pil python-pip libapache2-mod-wsgi libjpeg-dev zlib1g-dev libyaml-dev gnupg python python-mapnik apache2 python-dev  python-pyproj python-pil python-pip libapache2-mod-wsgi python-pyproj python-pil python-pip libapache2-mod-wsgi libjpeg-dev zlib1g-dev libyaml-dev wget unzip git
+RUN apt-get install -y node-carto apache2 python-dev python-pyproj python-pil python-pip libapache2-mod-wsgi libjpeg-dev zlib1g-dev gnupg python python-mapnik apache2 python-dev  python-pyproj python-pil python-pip libapache2-mod-wsgi python-pyproj python-pil python-pip libapache2-mod-wsgi libjpeg-dev zlib1g-dev wget unzip git python-yaml patch
 ENV HOME /root
 RUN gpg --keyserver keyserver.ubuntu.com --recv-keys ADE38194313EF4AF
 RUN gpg --armor --export ADE38194313EF4AF | apt-key add - 
@@ -14,8 +14,11 @@ RUN git clone https://github.com/bchartier/style-osm-geopicardie /srv/style-osm-
 ENV BRANCH master
 ADD update-style /usr/local/bin/update-style
 RUN a2enmod wsgi
-RUN apt-get install python-yaml
+
 RUN pip install MapProxy
+ADD mapproxy-yaml.patch /root/mapproxy-yaml.patch
+RUN patch /usr/local/lib/python2.7/dist-packages/mapproxy/util/yaml.py /root/mapproxy-yaml.patch
+
 RUN useradd -d /srv/mapproxy mapproxy
 RUN wget -O /tmp/coastline.zip http://nicolas.damiens.info/coastline-good.zip
 RUN mkdir /srv/coastline/; cd /srv/coastline; unzip /tmp/coastline.zip; rm /tmp/coastline.zip
