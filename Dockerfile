@@ -11,12 +11,15 @@ RUN gpg --armor --export ADE38194313EF4AF | apt-key add -
 ADD depot-nico.list /etc/apt/sources.list.d/depot-nico.list
 RUN apt-get update; apt-get install -y naturalearth-data fonts-exo
 RUN git clone https://github.com/bchartier/style-osm-geopicardie /srv/style-osm-geopicardie
-ENV BRANCH docker
+ENV BRANCH imposm3-mapping
 ADD update-style /usr/local/bin/update-style
 RUN a2enmod wsgi
-RUN pip install MapProxy
-RUN useradd -d /srv/mapproxy mapproxy
 RUN wget -O /tmp/coastline.zip http://nicolas.damiens.info/coastline-good.zip
+RUN apt-get install -y python-yaml
+RUN pip install MapProxy
+ADD mapproxy-yaml.patch /root/mapproxy-yaml.patch
+RUN patch /usr/local/lib/python2.7/dist-packages/mapproxy/util/yaml.py /root/mapproxy-yaml.patch
+RUN useradd -d /srv/mapproxy mapproxy
 RUN mkdir /srv/coastline/; cd /srv/coastline; unzip /tmp/coastline.zip; rm /tmp/coastline.zip
 RUN mkdir /srv/inpn;
 RUN wget -O /srv/inpn/l93_5k.zip http://inpn.mnhn.fr/docs/Shape/L93_5K.zip
@@ -24,6 +27,7 @@ RUN wget -O /srv/inpn/l93_10k.zip http://inpn.mnhn.fr/docs/Shape/L93_10K.zip
 RUN cd /srv/inpn/; unzip l93_5k.zip; unzip l93_10k.zip; rm *.zip
 ADD prod_project_mml.py /usr/local/bin/prod_project_mml
 ADD run /usr/local/bin/run
+RUN echo "<900913> +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs <>" >> /usr/share/proj/epsg
 ENV STYLE bright
 
 EXPOSE 80
