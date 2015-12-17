@@ -53,6 +53,9 @@ EOF
   mapnik_$STYLE:
     type: mapnik
     mapfile: $STYLE_PATH/mapnik.xml
+    image:
+        format: image/png
+        mode: RGBA
 EOF
 	echo "."
 done;
@@ -79,6 +82,10 @@ grids:
         origin: nw
 
 globals:
+    image:
+        paletted: false
+    cache:
+        meta_buffer: 0
 EOF
 
 cat /srv/mapproxy/mapproxy.layers.yaml /srv/mapproxy/mapproxy.sources.yaml >> /srv/mapproxy/mapproxy.yaml
