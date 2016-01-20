@@ -9,7 +9,6 @@ import sys
 import os
 
 project = json.loads(sys.stdin.read())
-
 files_ref = {
 	'10m_land':'/usr/share/shapefile/naturalearth/ne_10m_land.shp',
 	'processed_p': '/srv/coastline/coastline-good.shp',
@@ -36,4 +35,4 @@ for l in project['Layer']:
 		print "ooops:",l['name'],l['Datasource'].keys()
 		sys.exit(1)
 
-print json.dumps(project)
+print json.dumps(project,indent=4)
