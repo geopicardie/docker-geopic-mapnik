@@ -15,7 +15,8 @@ RUN wget -O /srv/inpn/l93_5k.zip http://inpn.mnhn.fr/docs/Shape/L93_5K.zip
 RUN wget -O /srv/inpn/l93_10k.zip http://inpn.mnhn.fr/docs/Shape/L93_10K.zip
 RUN cd /srv/inpn/; unzip l93_5k.zip; unzip l93_10k.zip; rm *.zip
 ADD prod_project_mml.py /usr/local/bin/prod_project_mml
-ADD configure /root/configure
-RUN /bin/bash /root/configure
+ADD configure /usr/local/bin/configure
+ADD run-mapnik /usr/local/bin/run-mapnik
+RUN chmod a+rx /usr/local/bin/run-mapnik /usr/local/bin/configure /usr/local/bin/prod_project_mml /usr/local/bin/update-style
 EXPOSE 80
-CMD ["/usr/local/bin/run"]
+CMD ["/usr/local/bin/run-mapnik"]
