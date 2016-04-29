@@ -10,14 +10,18 @@ import os
 
 project = json.loads(sys.stdin.read())
 files_ref = {
-	'10m_land':'/usr/share/shapefile/naturalearth/ne_10m_land.shp',
-	'processed_p': '/srv/coastline/coastline-good.shp',
-	'shoreline_300': '/usr/share/shapefile/naturalearth/ne_10m_coastline.shp',
-	'10m_rivers': '/usr/share/shapefile/naturalearth/ne_10m_rivers_europe.shp',
-	'10m_lakes': '/usr/share/shapefile/naturalearth/ne_10m_lakes_europe.shp',
-	'10m_populated_places': '/usr/share/shapefile/naturalearth/ne_10m_populated_places.shp',
-	'L93_10K': '/srv/inpn/L93_10K.shp',
-	'L93_5K': '/srv/inpn/L93_5K.shp'
+        '10m_land':'/usr/share/shapefile/naturalearth/ne_10m_land.shp',
+        'processed_p': '/srv/coastline/coastline-good.shp',
+        'shoreline_300': '/usr/share/shapefile/naturalearth/ne_10m_coastline.shp',
+        '10m_rivers': '/usr/share/shapefile/naturalearth/ne_10m_rivers_europe.shp',
+        '10m_lakes': '/usr/share/shapefile/naturalearth/ne_10m_lakes_europe.shp',
+        '10m_populated_places': '/usr/share/shapefile/naturalearth/ne_10m_populated_places.shp',
+        'L93_10K': '/srv/inpn/L93_10K.shp',
+        'L93_5K': '/srv/inpn/L93_5K.shp',
+        'land_polygons': '/srv/osmdata/land-polygons-complete-3857/land_polygons.shp',
+        'land_polygons_z8': '/srv/osmdata/land-polygons-generalized-3857/land_polygons_z8.shp',
+        'osmregionsfr': '/srv/osmdata/regionsfr/osm_regions_fr_lines_int_20160425.shp',
+        'osmregionsfr_gen': '/srv/osmdata/regionsfr/osm_regions_fr_lines_int_gen20k_20160425.shp',
 }
 
 for l in project['Layer']:

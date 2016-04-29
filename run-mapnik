@@ -1,3 +1,41 @@
 #!/bin/bash
+
+if [ ! -f /srv/coastline/coastline-good.shp ]; then
+	wget -O /tmp/coastline.zip http://nicolas.damiens.info/coastline-good.zip
+	cd /srv/coastline
+	unzip /tmp/coastline.zip
+	rm /tmp/coastline.zip
+fi
+
+if [ ! -f /srv/inpn/L93_10K.shp ]; then
+	wget -O /srv/inpn/l93_5k.zip http://inpn.mnhn.fr/docs/Shape/L93_5K.zip
+	wget -O /srv/inpn/l93_10k.zip http://inpn.mnhn.fr/docs/Shape/L93_10K.zip
+	cd /srv/inpn/
+	unzip l93_5k.zip
+	unzip l93_10k.zip
+	rm *.zip
+fi
+
+if [ ! -f /srv/osmdata/land-polygons-complete-3857/land_polygons.shp ]; then
+	wget -O /srv/osmdata/land.zip http://data.openstreetmapdata.com/land-polygons-complete-3857.zip
+	wget -O /srv/osmdata/landgen.zip http://data.openstreetmapdata.com/land-polygons-generalized-3857.zip
+	cd /srv/osmdata
+	unzip land.zip
+	unzip landgen.zip
+	rm land.zip landgen.zip
+fi
+
+if [ ! -d /srv/osmdata/regionsfr ]; then
+	mkdir -p /srv/osmdata/regionsfr
+	cd /srv/osmdata/regionsfr
+	wget -O regions.zip "http://nicolas.damiens.info/carto/data/osm-geopic/osm_regions_fr_lines_int_20160425.zip"
+	unzip regions.zip
+	rm regions.zip
+fi
+
+
 /usr/local/bin/configure
+
+rm -f /var/run/apache2/apache2.pid
+
 /usr/local/bin/run
